@@ -19,11 +19,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amonteiro.a2024_11_ambientit.R
 import com.amonteiro.a2024_11_ambientit.ui.MyError
+import com.amonteiro.a2024_11_ambientit.ui.MyTopBar
 import com.amonteiro.a2024_11_ambientit.ui.theme._2024_11_ambientitTheme
 import com.amonteiro.a2024_11_ambientit.viewmodel.MainViewModel
 import com.amonteiro.a2024_11_ambientit.viewmodel.MainViewModelPreview
@@ -73,11 +77,26 @@ fun SearchScreenPreview() {
 fun SearchScreen(
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel,
+    backStack :Boolean = false,
+    onBackIconClick : ()->Unit = {},
     onPictureRowItemClick : (PictureBean)->Unit = {}
     ) {
 
+    Column(modifier = modifier,  horizontalAlignment = Alignment.CenterHorizontally) {
 
-    Column(modifier = modifier.padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        MyTopBar(
+            title = "Recherche",
+            backStack =backStack,
+            onBackIconClick = onBackIconClick,
+            topBarActions = listOf {
+                IconButton(onClick = { }) {
+                    Icon(Icons.Default.Favorite, contentDescription = "Clear")
+                }
+                IconButton(onClick = { }) {
+                    Icon(Icons.Default.LocationOn, contentDescription = "Clear")
+                }
+            }
+        )
 
         var searchText by rememberSaveable { mutableStateOf("") }
 

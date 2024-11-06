@@ -1,16 +1,18 @@
 package com.amonteiro.a2024_11_ambientit.viewmodel
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amonteiro.a2024_11_ambientit.model.WeatherRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-data class PictureBean(val id: Int, val url: String, val title: String, val longText: String)
+data class PictureBean(val id: Int, val url: String, val title: String, val longText: String, var favorite: MutableState<Boolean> = mutableStateOf(false))
 
 fun main() {
     val viewModel = MainViewModel()
@@ -32,20 +34,18 @@ const val LONG_TEXT = """Le Lorem Ipsum est simplement du faux texte employé da
     et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard
     de l'imprimerie depuis les années 1500"""
 
-open class MainViewModel : ViewModel() {
+open class MainViewModel(var dispatcher : CoroutineDispatcher = Dispatchers.Default) : ViewModel() {
     var errorMessage by mutableStateOf("")
     var dataList by mutableStateOf(emptyList<PictureBean>())
     var runInProgress by mutableStateOf(false)
 
     val job = Job()
 
-
     open fun loadWeathers(cityName: String) {
         runInProgress = true
         errorMessage = ""
-        job.cancel()
 
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(dispatcher) {
 
             try {
                 dataList = WeatherRepository.loadWeathers(cityName).map {

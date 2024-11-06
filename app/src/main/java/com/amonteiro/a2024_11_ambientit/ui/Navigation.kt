@@ -49,7 +49,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 mainViewModel = mainViewModel,
                 onBackClick = {
                     navHostController.popBackStack()
-                }
+                },
+                backStack = navHostController.previousBackStackEntry != null,
+                onBackIconClick = {navHostController.popBackStack()}
             )
         }
     }

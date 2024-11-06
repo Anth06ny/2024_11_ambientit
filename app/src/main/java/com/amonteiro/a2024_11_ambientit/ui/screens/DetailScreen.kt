@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amonteiro.a2024_11_ambientit.R
+import com.amonteiro.a2024_11_ambientit.ui.MyTopBar
 import com.amonteiro.a2024_11_ambientit.ui.theme._2024_11_ambientitTheme
 import com.amonteiro.a2024_11_ambientit.viewmodel.MainViewModel
 import com.amonteiro.a2024_11_ambientit.viewmodel.MainViewModelPreview
@@ -32,8 +36,10 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 
 @Preview(showBackground = true, showSystemUi = true)
-@Preview(showBackground = true, showSystemUi = true,
-    uiMode = UI_MODE_NIGHT_YES)
+@Preview(
+    showBackground = true, showSystemUi = true,
+    uiMode = UI_MODE_NIGHT_YES
+)
 @Composable
 fun DetailScreenPreview() {
     _2024_11_ambientitTheme {
@@ -42,7 +48,7 @@ fun DetailScreenPreview() {
                 modifier = Modifier.padding(innerPadding),
                 idPicture = 1,
                 mainViewModel = MainViewModelPreview(),
-               )
+            )
 
         }
     }
@@ -51,17 +57,38 @@ fun DetailScreenPreview() {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable //id du PictureBean à afficher
-fun DetailScreen(modifier: Modifier = Modifier,
-                 idPicture: Int,
-                 mainViewModel : MainViewModel,
-                 onBackClick: ()->Unit = {}
-                 ){
+fun DetailScreen(
+    modifier: Modifier = Modifier,
+    idPicture: Int,
+    backStack: Boolean = false,
+    onBackIconClick: () -> Unit = {},
+    mainViewModel: MainViewModel,
+    onBackClick: () -> Unit = {}
+) {
 
     val pictureBean = mainViewModel.dataList.firstOrNull { it.id == idPicture }
 
     Column(
-        modifier = modifier.padding(8.dp)
-    )  {
+        modifier = modifier
+    ) {
+
+        MyTopBar(
+            title = pictureBean?.title ?: "-",
+            backStack = backStack,
+            onBackIconClick = onBackIconClick,
+            topBarActions = listOf {
+                IconButton(onClick = {
+                    if (pictureBean != null) {
+                        pictureBean.favorite.value = !pictureBean.favorite.value
+                    }
+                }) {
+                    Icon(
+                        if (pictureBean?.favorite?.value == true) Icons.Default.FavoriteBorder else Icons.Filled.Favorite, contentDescription = "Clear"
+                    )
+                }
+            }
+        )
+
         Text(
             text = pictureBean?.title ?: "Non trouvé",
             fontSize = 36.sp,
@@ -76,7 +103,9 @@ fun DetailScreen(modifier: Modifier = Modifier,
             loading = placeholder(R.mipmap.ic_launcher_round),
             failure = placeholder(R.mipmap.ic_launcher),
             contentScale = ContentScale.Fit,
-            modifier = Modifier.fillMaxWidth().weight(1f)
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
         )
 
         Text(
@@ -87,7 +116,7 @@ fun DetailScreen(modifier: Modifier = Modifier,
         Spacer(Modifier.size(16.dp))
 
         Button(
-            onClick = onBackClick ,
+            onClick = onBackClick,
             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
             modifier = Modifier
                 .padding(8.dp)
