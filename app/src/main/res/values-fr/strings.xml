@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">2024_11_ambientit</string>
+    <string name="bt_load">Chargement</string>
+    <string name="clear_filter">Effacer</string>
+</resources>
